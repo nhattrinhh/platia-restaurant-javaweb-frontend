@@ -1,0 +1,84 @@
+@import 'slick-carousel/slick/slick.css';
+@import 'slick-carousel/slick/slick-theme.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+body {
+    @apply font-poppins bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-200 leading-relaxed text-base;
+    scroll-behavior: smooth;
+}
+
+/* Reset styles */
+* {
+    @apply m-0 p-0 box-border;
+}
+
+/* Transition for smooth dark mode switching */
+html,
+body,
+[class*="bg-"],
+[class*="text-"],
+[class*="border-"] {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Slider styles */
+.slick-slider,
+.slick-list,
+.slick-track {
+    @apply w-full h-full;
+}
+
+.slick-slide img {
+    @apply w-full h-full object-cover;
+}
+
+/* Quảng cáo full-width */
+.advertisement-fullwidth img {
+    @apply w-full object-cover;
+}
+
+/* Hiệu ứng fade-in */
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+
+    .slick-slide img,
+    .advertisement-fullwidth img {
+        @apply h-[70vh];
+    }
+
+    .text-4xl {
+        @apply text-3xl;
+    }
+
+    .text-2xl {
+        @apply text-xl;
+    }
+
+    .text-lg {
+        @apply text-base;
+    }
+
+    .text-base {
+        @apply text-sm;
+    }
+}
