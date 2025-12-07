@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/news';
+const API_URL = 'http://api.nhat.cloud:8080/api/news';
 
 export const getNews = async () => {
     try {
