@@ -1,6 +1,6 @@
 import axios from 'axios';
-
-const API_BASE_URL = 'http://api.nhat.cloud:8080/api';
+import BASE_API_URL from '../../utils/api';
+const API_ENDPOINT = `${BASE_API_URL}/api`;
 
 const getAuthHeaders = (token) => {
     if (!token) {
@@ -15,7 +15,7 @@ const getAuthHeaders = (token) => {
 
 export const createOrder = async (token, orderData) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/orders`, orderData, {
+        const response = await axios.post(`${API_ENDPOINT}/orders`, orderData, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -29,7 +29,7 @@ export const createOrder = async (token, orderData) => {
 
 export const createOrderFromProduct = async (token, orderData) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/orders/create-from-product`, orderData, {
+        const response = await axios.post(`${API_ENDPOINT}/orders/create-from-product`, orderData, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -43,7 +43,7 @@ export const createOrderFromProduct = async (token, orderData) => {
 
 export const getOrders = async (token) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/orders`, {
+        const response = await axios.get(`${API_ENDPOINT}/orders`, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -57,7 +57,7 @@ export const getOrders = async (token) => {
 
 export const cancelOrder = async (token, orderId) => {
     try {
-        const response = await axios.put(`${API_BASE_URL}/orders/${orderId}/cancel`, null, {
+        const response = await axios.put(`${API_ENDPOINT}/orders/${orderId}/cancel`, null, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -71,7 +71,7 @@ export const cancelOrder = async (token, orderId) => {
 
 export const approveCancelOrder = async (token, orderId) => {
     try {
-        const response = await axios.put(`${API_BASE_URL}/orders/${orderId}/approve-cancel`, null, {
+        const response = await axios.put(`${API_ENDPOINT}/orders/${orderId}/approve-cancel`, null, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -85,7 +85,7 @@ export const approveCancelOrder = async (token, orderId) => {
 
 export const rejectCancelOrder = async (token, orderId) => {
     try {
-        const response = await axios.put(`${API_BASE_URL}/orders/${orderId}/reject-cancel`, null, {
+        const response = await axios.put(`${API_ENDPOINT}/orders/${orderId}/reject-cancel`, null, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -99,7 +99,7 @@ export const rejectCancelOrder = async (token, orderId) => {
 
 export const deleteOrder = async (token, orderId) => {
     try {
-        const response = await axios.delete(`${API_BASE_URL}/orders/${orderId}/delete`, {
+        const response = await axios.delete(`${API_ENDPOINT}/orders/${orderId}/delete`, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -113,7 +113,7 @@ export const deleteOrder = async (token, orderId) => {
 
 export const getAdminOrders = async (token) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/orders/admin`, {
+        const response = await axios.get(`${API_ENDPOINT}/orders/admin`, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -127,7 +127,7 @@ export const getAdminOrders = async (token) => {
 
 export const updateOrderStatus = async (token, orderId, status) => {
     try {
-        const response = await axios.put(`${API_BASE_URL}/orders/${orderId}/status`, null, {
+        const response = await axios.put(`${API_ENDPOINT}/orders/${orderId}/status`, null, {
             headers: getAuthHeaders(token),
             params: { status },
             timeout: 5000,
@@ -142,7 +142,7 @@ export const updateOrderStatus = async (token, orderId, status) => {
 
 export const updatePaymentStatus = async (token, orderId, status) => {
     try {
-        const response = await axios.put(`${API_BASE_URL}/orders/${orderId}/payment-status`, null, {
+        const response = await axios.put(`${API_ENDPOINT}/orders/${orderId}/payment-status`, null, {
             headers: getAuthHeaders(token),
             params: { status },
             timeout: 5000,
@@ -157,7 +157,7 @@ export const updatePaymentStatus = async (token, orderId, status) => {
 
 export const updateDeliveryDate = async (token, orderId, deliveryDate) => {
     try {
-        const response = await axios.put(`${API_BASE_URL}/orders/${orderId}/delivery-date`, { deliveryDate }, {
+        const response = await axios.put(`${API_ENDPOINT}/orders/${orderId}/delivery-date`, { deliveryDate }, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });

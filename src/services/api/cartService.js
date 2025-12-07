@@ -1,6 +1,6 @@
 import axios from 'axios';
-
-const API_BASE_URL = 'http://api.nhat.cloud:8080/api/cart';
+import BASE_API_URL from '../../utils/api';
+const API_ENDPOINT = `${BASE_API_URL}/api/cart`;
 
 const getAuthHeaders = (token) => {
     if (!token) {
@@ -15,7 +15,7 @@ const getAuthHeaders = (token) => {
 
 export const getCart = async (token) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}`, {
+        const response = await axios.get(`${API_ENDPOINT}`, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -34,7 +34,7 @@ export const getCart = async (token) => {
 export const addToCart = async (token, productId, quantity) => {
     try {
         const response = await axios.post(
-            `${API_BASE_URL}/add`,
+            `${API_ENDPOINT}/add`,
             null,
             {
                 params: { productId, quantity },
@@ -57,7 +57,7 @@ export const addToCart = async (token, productId, quantity) => {
 export const updateCartQuantity = async (token, productId, quantity) => {
     try {
         const response = await axios.put(
-            `${API_BASE_URL}/update`,
+            `${API_ENDPOINT}/update`,
             null,
             {
                 params: { productId, quantity },
@@ -80,7 +80,7 @@ export const updateCartQuantity = async (token, productId, quantity) => {
 export const removeFromCart = async (token, productId) => {
     try {
         const response = await axios.delete(
-            `${API_BASE_URL}/remove`,
+            `${API_ENDPOINT}/remove`,
             {
                 params: { productId },
                 headers: getAuthHeaders(token),
@@ -101,7 +101,7 @@ export const removeFromCart = async (token, productId) => {
 
 export const clearCart = async (token) => {
     try {
-        await axios.delete(`${API_BASE_URL}/clear`, {
+        await axios.delete(`${API_ENDPOINT}/clear`, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });

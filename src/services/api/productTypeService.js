@@ -1,10 +1,10 @@
 import axios from 'axios';
-
-const API_URL = 'http://api.nhat.cloud:8080/api';
+import BASE_API_URL from '../../utils/api';
+const API_ENDPOINT = `${BASE_API_URL}/api`;
 
 export const getProductTypes = async (token) => {
     try {
-        const response = await axios.get(`${API_URL}/product-types`, {
+        const response = await axios.get(`${API_ENDPOINT}/product-types`, {
             headers: { Authorization: `Bearer ${token}` },
             timeout: 5000,
         });
@@ -16,7 +16,7 @@ export const getProductTypes = async (token) => {
 
 export const createProductType = async (token, productTypeData) => {
     try {
-        const response = await axios.post(`${API_URL}/product-types`, productTypeData, {
+        const response = await axios.post(`${API_ENDPOINT}/product-types`, productTypeData, {
             headers: { Authorization: `Bearer ${token}` },
             timeout: 5000,
         });
@@ -28,7 +28,7 @@ export const createProductType = async (token, productTypeData) => {
 
 export const updateProductType = async (token, id, productTypeData) => {
     try {
-        const response = await axios.put(`${API_URL}/product-types/${id}`, productTypeData, {
+        const response = await axios.put(`${API_ENDPOINT}/product-types/${id}`, productTypeData, {
             headers: { Authorization: `Bearer ${token}` },
             timeout: 5000,
         });
@@ -40,7 +40,7 @@ export const updateProductType = async (token, id, productTypeData) => {
 
 export const deleteProductType = async (token, id) => {
     try {
-        await axios.delete(`${API_URL}/product-types/${id}`, {
+        await axios.delete(`${API_ENDPOINT}/product-types/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
             timeout: 5000,
         });

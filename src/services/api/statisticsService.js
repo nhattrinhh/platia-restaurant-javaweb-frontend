@@ -1,6 +1,6 @@
 import axios from 'axios';
-
-const API_BASE_URL = 'http://api.nhat.cloud:8080/api/statistics';
+import BASE_API_URL from '../../utils/api';
+const API_ENDPOINT = `${BASE_API_URL}/api/statistics`;
 
 const getAuthHeaders = (token) => {
     if (!token) {
@@ -15,7 +15,7 @@ const getAuthHeaders = (token) => {
 
 export const getAllCategories = async (token) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/categories`, {
+        const response = await axios.get(`${API_ENDPOINT}/categories`, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -29,7 +29,7 @@ export const getAllCategories = async (token) => {
 
 export const getAllProductTypes = async (token) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/product-types`, {
+        const response = await axios.get(`${API_ENDPOINT}/product-types`, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -43,7 +43,7 @@ export const getAllProductTypes = async (token) => {
 
 export const getTopPopularDishes = async (token, limit = 3) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/top-dishes`, {
+        const response = await axios.get(`${API_ENDPOINT}/top-dishes`, {
             params: { limit },
             headers: getAuthHeaders(token),
             timeout: 5000,
@@ -58,7 +58,7 @@ export const getTopPopularDishes = async (token, limit = 3) => {
 
 export const getRecentActivities = async (token, limit = 7) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/recent-activities`, {
+        const response = await axios.get(`${API_ENDPOINT}/recent-activities`, {
             params: { limit },
             headers: getAuthHeaders(token),
             timeout: 5000,
@@ -73,7 +73,7 @@ export const getRecentActivities = async (token, limit = 7) => {
 
 export const getTopUsers = async (token, limit = 3) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/top-users`, {
+        const response = await axios.get(`${API_ENDPOINT}/top-users`, {
             params: { limit },
             headers: getAuthHeaders(token),
             timeout: 5000,
@@ -88,7 +88,7 @@ export const getTopUsers = async (token, limit = 3) => {
 
 export const getQuickSummary = async (token) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/summary`, {
+        const response = await axios.get(`${API_ENDPOINT}/summary`, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });

@@ -1,10 +1,10 @@
 import axios from 'axios';
-
-const API_URL = 'http://api.nhat.cloud:8080/api';
+import BASE_API_URL from '../../utils/api';
+const API_ENDPOINT = `${BASE_API_URL}/api`;
 
 export const getCategories = async (token) => {
     try {
-        const response = await axios.get(`${API_URL}/categories`, {
+        const response = await axios.get(`${API_ENDPOINT}/categories`, {
             headers: { Authorization: `Bearer ${token}` },
             timeout: 5000,
         });
@@ -16,7 +16,7 @@ export const getCategories = async (token) => {
 
 export const createCategory = async (token, categoryData) => {
     try {
-        const response = await axios.post(`${API_URL}/categories`, categoryData, {
+        const response = await axios.post(`${API_ENDPOINT}/categories`, categoryData, {
             headers: { Authorization: `Bearer ${token}` },
             timeout: 5000,
         });
@@ -28,7 +28,7 @@ export const createCategory = async (token, categoryData) => {
 
 export const updateCategory = async (token, id, categoryData) => {
     try {
-        const response = await axios.put(`${API_URL}/categories/${id}`, categoryData, {
+        const response = await axios.put(`${API_ENDPOINT}/categories/${id}`, categoryData, {
             headers: { Authorization: `Bearer ${token}` },
             timeout: 5000,
         });
@@ -40,7 +40,7 @@ export const updateCategory = async (token, id, categoryData) => {
 
 export const deleteCategory = async (token, id) => {
     try {
-        await axios.delete(`${API_URL}/categories/${id}`, {
+        await axios.delete(`${API_ENDPOINT}/categories/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
             timeout: 5000,
         });

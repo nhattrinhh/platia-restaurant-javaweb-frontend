@@ -1,10 +1,10 @@
-import axios from 'axios';
-
-const API_URL = 'http://api.nhat.cloud:8080/api/auth';
+import axios from 'axios'; 
+import BASE_API_URL from '../../utils/api';
+const API_ENDPOINT = `${BASE_API_URL}/api/auth`;
 
 export const register = async (registerData) => {
     try {
-        const response = await axios.post(`${API_URL}/register`, registerData, {
+        const response = await axios.post(`${API_ENDPOINT}/register`, registerData, {
             headers: { 'Content-Type': 'application/json' },
             timeout: 5000,
         });
@@ -16,7 +16,7 @@ export const register = async (registerData) => {
 
 export const login = async (loginData) => {
     try {
-        const response = await axios.post(`${API_URL}/login`, loginData, {
+        const response = await axios.post(`${API_ENDPOINT}/login`, loginData, {
             headers: { 'Content-Type': 'application/json' },
             timeout: 5000,
         });

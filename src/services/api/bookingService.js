@@ -1,6 +1,6 @@
 import axios from 'axios';
-
-const API_BASE_URL = 'http://api.nhat.cloud:8080/api/booking';
+import BASE_API_URL from '../../utils/api';
+const API_ENDPOINT = `${BASE_API_URL}/booking`;
 
 const getAuthHeaders = (token) => {
     if (!token) {
@@ -16,7 +16,7 @@ const getAuthHeaders = (token) => {
 export const createBooking = async (token, bookingData) => {
     try {
         const response = await axios.post(
-            `${API_BASE_URL}/create`,
+            `${API_ENDPOINT}/create`,
             bookingData,
             {
                 headers: getAuthHeaders(token),
@@ -33,7 +33,7 @@ export const createBooking = async (token, bookingData) => {
 
 export const getBookingHistory = async (token) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/history`, {
+        const response = await axios.get(`${API_ENDPOINT}/history`, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -47,7 +47,7 @@ export const getBookingHistory = async (token) => {
 
 export const getBookingDetails = async (token, bookingId) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/${bookingId}`, {
+        const response = await axios.get(`${API_ENDPOINT}/${bookingId}`, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -61,7 +61,7 @@ export const getBookingDetails = async (token, bookingId) => {
 
 export const cancelBooking = async (token, bookingId) => {
     try {
-        const response = await axios.put(`${API_BASE_URL}/user/cancel/${bookingId}`, null, {
+        const response = await axios.put(`${API_ENDPOINT}/user/cancel/${bookingId}`, null, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -75,7 +75,7 @@ export const cancelBooking = async (token, bookingId) => {
 
 export const getAllBookings = async (token) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/all`, {
+        const response = await axios.get(`${API_ENDPOINT}/all`, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -89,7 +89,7 @@ export const getAllBookings = async (token) => {
 
 export const confirmBooking = async (token, bookingId) => {
     try {
-        const response = await axios.put(`${API_BASE_URL}/confirm/${bookingId}`, null, {
+        const response = await axios.put(`${API_ENDPOINT}/confirm/${bookingId}`, null, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -103,7 +103,7 @@ export const confirmBooking = async (token, bookingId) => {
 
 export const cancelBookingByAdmin = async (token, bookingId) => {
     try {
-        const response = await axios.put(`${API_BASE_URL}/cancel/${bookingId}`, null, {
+        const response = await axios.put(`${API_ENDPOINT}/cancel/${bookingId}`, null, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -117,7 +117,7 @@ export const cancelBookingByAdmin = async (token, bookingId) => {
 
 export const deleteBooking = async (token, bookingId) => {
     try {
-        const response = await axios.delete(`${API_BASE_URL}/delete/${bookingId}`, {
+        const response = await axios.delete(`${API_ENDPOINT}/delete/${bookingId}`, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -131,7 +131,7 @@ export const deleteBooking = async (token, bookingId) => {
 
 export const approveCancelBooking = async (token, bookingId) => {
     try {
-        const response = await axios.put(`${API_BASE_URL}/approve-cancel/${bookingId}`, null, {
+        const response = await axios.put(`${API_ENDPOINT}/approve-cancel/${bookingId}`, null, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
@@ -145,7 +145,7 @@ export const approveCancelBooking = async (token, bookingId) => {
 
 export const rejectCancelBooking = async (token, bookingId) => {
     try {
-        const response = await axios.put(`${API_BASE_URL}/reject-cancel/${bookingId}`, null, {
+        const response = await axios.put(`${API_ENDPOINT}/reject-cancel/${bookingId}`, null, {
             headers: getAuthHeaders(token),
             timeout: 5000,
         });
