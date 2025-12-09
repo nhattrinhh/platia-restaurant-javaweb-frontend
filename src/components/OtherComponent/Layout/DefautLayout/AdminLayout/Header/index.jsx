@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { FaUserCircle } from 'react-icons/fa';
+import { FaUserCircle, FaBars } from 'react-icons/fa';
 import { Loader2, X } from 'lucide-react';
 
 // Toast Notification Component
@@ -24,7 +24,7 @@ function Toast({ message, type, onClose }) {
     );
 }
 
-function Header() {
+function Header({ onToggleSidebar }) {
     const [showMenu, setShowMenu] = useState(false);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -79,35 +79,43 @@ function Header() {
     return (
         <>
             <header
-                className="admin-header h-16 sticky top-0 z-50 bg-white border-b shadow-sm flex items-center justify-between px-4"
+                className="admin-header h-16 sticky top-0 z-50 bg-white border-b shadow-sm flex items-center justify-between px-3 sm:px-4"
             >
                 <div className="admin-header-left flex items-center gap-2">
+                    {/* Hamburger menu button cho mobile/tablet */}
+                    <button
+                        onClick={onToggleSidebar}
+                        className="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200 mr-2"
+                        aria-label="Mở menu"
+                    >
+                        <FaBars className="w-5 h-5" />
+                    </button>
                     <img
                         src="/images/logo0.png"
                         alt="Platia Logo"
-                        className="h-10 w-10 object-contain"
+                        className="h-8 w-8 sm:h-10 sm:w-10 object-contain"
                     />
-                    <span className="text-2xl font-semibold text-indigo-900 tracking-tight">
+                    <span className="text-xl sm:text-2xl font-semibold text-indigo-900 tracking-tight">
                         Platia
                     </span>
                 </div>
 
-                <div className="admin-header-right flex items-center gap-4">
+                <div className="admin-header-right flex items-center gap-2 sm:gap-4">
                     <div className="search-box hidden md:block">
                         <input
                             type="text"
-                            className="form-control w-45 bg-gray-100 rounded-full p-2"
+                            className="form-control w-45 bg-gray-100 rounded-full p-2 text-sm"
                             placeholder="Tìm kiếm..."
                             style={{ minWidth: 180 }}
                         />
                     </div>
                     <div className="relative flex items-center gap-2">
-                        <span className="text-gray-500 font-semibold hidden md:inline">
+                        <span className="text-gray-500 font-semibold hidden lg:inline text-sm">
                             Xin chào, {user?.fullname || 'Người dùng'}
                         </span>
                         <FaUserCircle
-                            size={32}
-                            className="text-primary cursor-pointer"
+                            size={28}
+                            className="text-primary cursor-pointer hover:opacity-80 transition-opacity sm:w-8 sm:h-8"
                             onClick={() => {
                                 setShowMenu(!showMenu);
                             }}
