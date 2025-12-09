@@ -348,121 +348,202 @@ function NewsManager() {
         }
     };
 
-    if (loading) return <div className="flex items-center justify-center min-h-screen text-gray-600">Đang tải...</div>;
-    if (error) return <div className="flex items-center justify-center min-h-screen text-red-500">{error}</div>;
-
-    return (
-        <div className="container mx-auto p-6 bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen">
-            <ToastContainer />
-            <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                <h2 className="text-3xl font-extrabold text-indigo-900 tracking-tight">Quản Lý Tin Tức</h2>
-                <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-                    <div className="relative w-full md:w-80">
-                        <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                        <input
-                            type="text"
-                            className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            placeholder="Tìm kiếm theo tiêu đề tin tức..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                        />
-                        {search && (
-                            <FaTimes
-                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer hover:text-red-500"
-                                onClick={handleClearFilter}
-                            />
-                        )}
-                    </div>
-                    <button
-                        className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all duration-200"
-                        onClick={() => handleOpenModal('add')}
-                    >
-                        <FaPlus className="mr-2" /> Thêm tin tức
-                    </button>
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600 mb-4"></div>
+                    <p className="text-gray-600 text-lg font-medium">Đang tải...</p>
                 </div>
             </div>
+        );
+    }
+    
+    if (error) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+                <div className="text-center bg-white p-8 rounded-xl shadow-lg max-w-md mx-4">
+                    <div className="text-red-500 text-5xl mb-4">⚠️</div>
+                    <p className="text-red-600 text-lg font-semibold">{error}</p>
+                </div>
+            </div>
+        );
+    }
 
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden divide-y divide-gray-200">
-                {newsList.length === 0 ? (
-                    <div className="text-center text-gray-500 py-6">
-                        Không có tin tức phù hợp
-                    </div>
-                ) : (
-                    newsList.map((news, idx) => (
-                        <details
-                            key={news.id}
-                            className="group border-b border-gray-200 transition-all duration-200 hover:bg-gray-50"
-                        >
-                            <summary className="flex items-center justify-between p-4 cursor-pointer select-none">
-                                <div className="flex items-center gap-4">
-                                    <span className="font-semibold text-indigo-700">{idx + 1}.</span>
-                                    <img
-                                        src={news.imageUrl}
-                                        alt={news.title}
-                                        className="w-12 h-12 object-cover rounded"
-                                        onError={(e) => { e.target.src = '/images/News/placeholder.jpg'; }}
-                                    />
-                                    <span className="font-semibold text-gray-900">{news.title}</span>
-                                </div>
-                                <div className="flex items-center gap-3">
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+            <ToastContainer />
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+                {/* Header Section */}
+                <div className="mb-6 sm:mb-8">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
+                        <div>
+                            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 tracking-tight mb-2">
+                                Quản Lý Tin Tức
+                            </h2>
+                            <p className="text-sm sm:text-base text-gray-600">
+                                Quản lý và cập nhật thông tin tin tức của nhà hàng
+                            </p>
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full lg:w-auto">
+                            <div className="relative flex-1 sm:flex-initial sm:w-64 lg:w-80">
+                                <FaSearch className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm sm:text-base" />
+                                <input
+                                    type="text"
+                                    className="w-full pl-9 sm:pl-11 pr-9 sm:pr-11 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm sm:text-base shadow-sm"
+                                    placeholder="Tìm kiếm theo tiêu đề..."
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                />
+                                {search && (
                                     <button
-                                        className="p-2 bg-indigo-500 text-white rounded-full hover:bg-indigo-600 transition-all duration-200"
-                                        onClick={(e) => { e.stopPropagation(); handleOpenModal('edit', news); }}
-                                        title="Chỉnh sửa"
+                                        onClick={handleClearFilter}
+                                        className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors"
+                                        aria-label="Xóa tìm kiếm"
                                     >
-                                        <FaEdit />
+                                        <FaTimes className="text-sm sm:text-base" />
                                     </button>
-                                    <button
-                                        className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all duration-200"
-                                        onClick={(e) => { e.stopPropagation(); handleDelete(news.id); }}
-                                        title="Xóa"
-                                    >
-                                        <FaTrash />
-                                    </button>
-                                    <span className="text-gray-500 text-sm">
-                                        {new Date(news.timestamp).toLocaleString('vi-VN')}
-                                    </span>
-                                </div>
-                            </summary>
-
-                            <div className="px-6 pb-4 text-gray-700">
-                                <p className="mb-2">
-                                    <span className="font-medium">Mô tả:</span>{' '}
-                                    {news.description || 'Không có mô tả.'}
-                                </p>
-                                <div className="flex items-center gap-3">
-                                    <span className="font-medium">Xem hình ảnh:</span>
-                                    <img
-                                        src={news.imageUrl}
-                                        alt={news.title}
-                                        className="w-24 h-24 object-cover rounded cursor-pointer"
-                                        onError={(e) => { e.target.src = '/images/News/placeholder.jpg'; }}
-                                        onClick={() => handleShowImage(news.imageUrl)}
-                                    />
-                                </div>
+                                )}
                             </div>
-                        </details>
-                    ))
-                )}
+                            <button
+                                className="flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-sm sm:text-base whitespace-nowrap"
+                                onClick={() => handleOpenModal('add')}
+                            >
+                                <FaPlus className="mr-2 text-sm sm:text-base" /> 
+                                <span className="hidden sm:inline">Thêm tin tức</span>
+                                <span className="sm:hidden">Thêm mới</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* News List */}
+                <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                    {newsList.length === 0 ? (
+                        <div className="text-center py-12 sm:py-16">
+                            <div className="text-gray-400 text-5xl sm:text-6xl mb-4">📰</div>
+                            <p className="text-gray-500 text-base sm:text-lg font-medium">
+                                Không có tin tức phù hợp
+                            </p>
+                            <p className="text-gray-400 text-sm sm:text-base mt-2">
+                                Hãy thêm tin tức mới để bắt đầu
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="divide-y divide-gray-200">
+                            {newsList.map((news, idx) => (
+                                <details
+                                    key={news.id}
+                                    className="group transition-all duration-200 hover:bg-gray-50"
+                                >
+                                    <summary className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-6 cursor-pointer select-none gap-3 sm:gap-4">
+                                        <div className="flex items-start sm:items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                                            <span className="flex-shrink-0 font-bold text-indigo-600 text-base sm:text-lg">
+                                                {idx + 1}.
+                                            </span>
+                                            <div className="flex-shrink-0">
+                                                <img
+                                                    src={news.imageUrl}
+                                                    alt={news.title}
+                                                    className="w-14 h-14 sm:w-16 sm:h-16 object-cover rounded-lg shadow-sm"
+                                                    onError={(e) => { e.target.src = '/images/News/placeholder.jpg'; }}
+                                                />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="font-semibold text-gray-900 text-sm sm:text-base lg:text-lg mb-1 line-clamp-2">
+                                                    {news.title}
+                                                </h3>
+                                                <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">
+                                                    {new Date(news.timestamp).toLocaleString('vi-VN')}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3 flex-shrink-0">
+                                            <span className="text-xs text-gray-500 sm:hidden">
+                                                {new Date(news.timestamp).toLocaleDateString('vi-VN')}
+                                            </span>
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    className="p-2 sm:p-2.5 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-all duration-200 shadow-sm hover:shadow-md"
+                                                    onClick={(e) => { e.stopPropagation(); handleOpenModal('edit', news); }}
+                                                    title="Chỉnh sửa"
+                                                    aria-label="Chỉnh sửa"
+                                                >
+                                                    <FaEdit className="text-xs sm:text-sm" />
+                                                </button>
+                                                <button
+                                                    className="p-2 sm:p-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 shadow-sm hover:shadow-md"
+                                                    onClick={(e) => { e.stopPropagation(); handleDelete(news.id); }}
+                                                    title="Xóa"
+                                                    aria-label="Xóa"
+                                                >
+                                                    <FaTrash className="text-xs sm:text-sm" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </summary>
+
+                                    <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-2 sm:pt-4 bg-gray-50">
+                                        <div className="space-y-4">
+                                            <div>
+                                                <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                                                    <span className="font-semibold text-gray-900">Mô tả:</span>{' '}
+                                                    {news.description || <span className="text-gray-400 italic">Không có mô tả.</span>}
+                                                </p>
+                                            </div>
+                                            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                                                <span className="font-semibold text-gray-900 text-sm sm:text-base">Hình ảnh:</span>
+                                                <div className="flex items-center gap-3">
+                                                    <img
+                                                        src={news.imageUrl}
+                                                        alt={news.title}
+                                                        className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg cursor-pointer shadow-md hover:shadow-lg transition-shadow border-2 border-gray-200 hover:border-indigo-300"
+                                                        onError={(e) => { e.target.src = '/images/News/placeholder.jpg'; }}
+                                                        onClick={() => handleShowImage(news.imageUrl)}
+                                                        title="Click để xem ảnh lớn"
+                                                    />
+                                                    <button
+                                                        onClick={() => handleShowImage(news.imageUrl)}
+                                                        className="text-xs sm:text-sm text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1"
+                                                    >
+                                                        <FaEye className="text-xs" />
+                                                        Xem ảnh lớn
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </details>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
 
 
             {/* Modal xem ảnh lớn */}
             {showImageModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-                    <div className="relative max-w-4xl w-full">
+                <div 
+                    className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
+                    onClick={handleCloseImageModal}
+                >
+                    <div 
+                        className="relative max-w-5xl w-full max-h-[90vh] flex items-center justify-center"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <img
                             src={imageToShow}
                             alt="News"
-                            className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
+                            className="w-full h-auto max-h-[90vh] object-contain rounded-lg shadow-2xl"
                             onError={(e) => { e.target.src = '/images/News/placeholder.jpg'; }}
                         />
                         <button
-                            className="absolute top-4 right-4 text-white text-2xl font-bold bg-gray-800 rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-700 transition-all duration-200"
+                            className="absolute top-2 right-2 sm:top-4 sm:right-4 text-white bg-gray-900 bg-opacity-70 hover:bg-opacity-100 rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center transition-all duration-200 shadow-lg"
                             onClick={handleCloseImageModal}
+                            aria-label="Đóng"
                         >
-                            <FaTimes />
+                            <FaTimes className="text-sm sm:text-base" />
                         </button>
                     </div>
                 </div>
@@ -470,20 +551,45 @@ function NewsManager() {
 
             {/* Modal thêm/chỉnh sửa */}
             {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-8 w-full max-w-4xl shadow-2xl backdrop-blur-lg">
-                        <h3 className="text-2xl font-bold text-gray-900 mb-6">{modalType === 'add' ? 'Thêm tin tức' : 'Chỉnh sửa tin tức'}</h3>
-                        {error && <div className="text-red-500 mb-4">{error}</div>}
+                <div 
+                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto"
+                    onClick={handleCloseModal}
+                >
+                    <div 
+                        className="bg-white rounded-xl p-6 sm:p-8 w-full max-w-4xl shadow-2xl my-4"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
+                                {modalType === 'add' ? 'Thêm tin tức mới' : 'Chỉnh sửa tin tức'}
+                            </h3>
+                            <button
+                                onClick={handleCloseModal}
+                                className="text-gray-400 hover:text-gray-600 transition-colors p-1"
+                                aria-label="Đóng"
+                            >
+                                <FaTimes className="text-xl sm:text-2xl" />
+                            </button>
+                        </div>
+                        
+                        {error && (
+                            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm sm:text-base">
+                                {error}
+                            </div>
+                        )}
+                        
                         <form onSubmit={handleSubmit}>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                 {/* Cột trái */}
-                                <div className="space-y-4">
+                                <div className="space-y-5">
                                     <div>
-                                        <label className="block font-medium text-sm text-gray-700">Tiêu đề tin tức *</label>
+                                        <label className="block font-semibold text-sm sm:text-base text-gray-700 mb-2">
+                                            Tiêu đề tin tức <span className="text-red-500">*</span>
+                                        </label>
                                         <input
                                             type="text"
                                             name="title"
-                                            className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm sm:text-base shadow-sm"
                                             value={form.title}
                                             onChange={handleChange}
                                             required
@@ -491,51 +597,58 @@ function NewsManager() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block font-medium text-sm text-gray-700">Hình ảnh</label>
+                                        <label className="block font-semibold text-sm sm:text-base text-gray-700 mb-2">
+                                            Hình ảnh
+                                        </label>
                                         <input
                                             type="text"
                                             name="imageUrl"
-                                            className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm sm:text-base shadow-sm"
                                             value={form.imageUrl}
                                             onChange={handleChange}
                                             placeholder="Nhập tên tệp hoặc URL"
                                         />
                                         {form.imageUrl && (
-                                            <img
-                                                src={form.imageUrl.startsWith('http') ? form.imageUrl : `${baseImagePath}${form.imageUrl}`}
-                                                alt="Preview"
-                                                className="w-20 h-20 object-cover mt-2 rounded"
-                                                onError={(e) => { e.target.src = '/images/News/placeholder.jpg'; }}
-                                            />
+                                            <div className="mt-3">
+                                                <p className="text-xs sm:text-sm text-gray-600 mb-2">Xem trước:</p>
+                                                <img
+                                                    src={form.imageUrl.startsWith('http') ? form.imageUrl : `${baseImagePath}${form.imageUrl}`}
+                                                    alt="Preview"
+                                                    className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg shadow-md border-2 border-gray-200"
+                                                    onError={(e) => { e.target.src = '/images/News/placeholder.jpg'; }}
+                                                />
+                                            </div>
                                         )}
                                     </div>
                                 </div>
                                 {/* Cột phải */}
-                                <div className="space-y-4">
+                                <div className="space-y-5">
                                     <div>
-                                        <label className="block font-medium text-sm text-gray-700">Mô tả</label>
+                                        <label className="block font-semibold text-sm sm:text-base text-gray-700 mb-2">
+                                            Mô tả
+                                        </label>
                                         <textarea
                                             name="description"
-                                            className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm sm:text-base shadow-sm resize-none"
                                             value={form.description}
                                             onChange={handleChange}
-                                            placeholder="Nhập mô tả tin tức"
-                                            rows="6"
+                                            placeholder="Nhập mô tả tin tức..."
+                                            rows="8"
                                         />
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex justify-end mt-6 space-x-3">
+                            <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6 sm:mt-8 pt-6 border-t border-gray-200">
                                 <button
                                     type="button"
-                                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-all duration-200"
+                                    className="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-200 font-medium text-sm sm:text-base shadow-sm"
                                     onClick={handleCloseModal}
                                 >
                                     Hủy
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all duration-200"
+                                    className="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all duration-200 font-medium text-sm sm:text-base shadow-md hover:shadow-lg"
                                 >
                                     {modalType === 'add' ? 'Thêm mới' : 'Lưu thay đổi'}
                                 </button>

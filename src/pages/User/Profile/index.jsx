@@ -113,7 +113,7 @@ function Profile() {
 
     const validateForm = () => {
         const errors = [];
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // biêu thuc chinh quy
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(editForm.email)) {
             errors.push('Email không hợp lệ.');
         }
