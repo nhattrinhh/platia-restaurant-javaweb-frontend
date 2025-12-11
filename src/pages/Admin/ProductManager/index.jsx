@@ -19,6 +19,8 @@ import {
 import Swal from "sweetalert2";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ImageUpload from "../../../components/ImageUpload";
+import { uploadToR2 } from "../../../services/api/uploadService";
 
 function ProductManager() {
   const [products, setProducts] = useState([]);
@@ -40,12 +42,13 @@ function ProductManager() {
     categoryId: "",
     categoryName: "",
   });
+  const [stagedImage, setStagedImage] = useState(null); // { file, filename }
   const [showImageModal, setShowImageModal] = useState(false);
   const [imageToShow, setImageToShow] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 7; // 7 records per page
+  const productsPerPage = 8; // 7 records per page
 
   const token = localStorage.getItem("token");
   const baseImagePath = "http://localhost:5173/images/Product/";
@@ -153,6 +156,7 @@ function ProductManager() {
     setShowModal(false);
     setSelectedProduct(null);
     setError(null);
+    setStagedImage(null);
   };
 
   // Xử lý thay đổi form
@@ -196,37 +200,86 @@ function ProductManager() {
       !form.productTypeId ||
       !form.status
     ) {
-      setError(
-        "Vui lòng nhập đầy đủ thông tin bắt buộc (tên, giá gốc, loại món ăn, trạng thái)."
-      );
+      const msg =
+        "Vui lòng nhập đầy đủ thông tin bắt buộc (tên, giá gốc, loại món ăn, trạng thái).";
+      toast.error(msg, {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
       return;
     }
     const originalPrice = parseFloat(form.originalPrice);
     const discountedPrice = parseFloat(form.discountedPrice) || 0;
     if (originalPrice < 0 || discountedPrice < 0) {
-      setError("Giá phải là số dương.");
+      const msg = "Giá phải là số dương.";
+      toast.error(msg, {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
       return;
     }
     if (discountedPrice > originalPrice) {
-      setError("Giá khuyến mãi không được lớn hơn giá gốc.");
+      const msg = "Giá khuyến mãi không được lớn hơn giá gốc.";
+      toast.error(msg, {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
       return;
     }
-    const imageUrl = form.img
-      ? form.img.startsWith("http")
-        ? form.img
-        : `${baseImagePath}${form.img}`
-      : null;
-    if (imageUrl && imageUrl.startsWith("http") && !isValidUrl(imageUrl)) {
-      setError("URL hình ảnh không hợp lệ.");
-      return;
-    }
-    if (
-      imageUrl &&
-      !imageUrl.startsWith("http") &&
-      !form.img.match(/\.(jpg|jpeg|png|gif)$/i)
-    ) {
-      setError("Tên tệp hình ảnh phải có đuôi .jpg, .jpeg, .png hoặc .gif.");
-      return;
+    // Nếu có stagedImage (file được chọn nhưng chưa upload), bỏ qua kiểm tra URL tại client.
+    let imageUrl = null;
+    if (!stagedImage) {
+      imageUrl = form.img
+        ? form.img.startsWith("http")
+          ? form.img
+          : `${baseImagePath}${form.img}`
+        : null;
+      if (imageUrl && imageUrl.startsWith("http") && !isValidUrl(imageUrl)) {
+        const msg = "URL hình ảnh không hợp lệ.";
+        toast.error(msg, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+        });
+        return;
+      }
+      if (
+        imageUrl &&
+        !imageUrl.startsWith("http") &&
+        !form.img.match(/\.(jpg|jpeg|png|gif)$/i)
+      ) {
+        const msg =
+          "Tên tệp hình ảnh phải có đuôi .jpg, .jpeg, .png hoặc .gif.";
+        toast.error(msg, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+        });
+        return;
+      }
     }
 
     // Xác nhận lưu với SweetAlert2
@@ -249,6 +302,43 @@ function ProductManager() {
     if (!confirmResult.isConfirmed) return;
 
     try {
+      // Nếu có file được staged (người dùng chọn file nhưng chưa lưu), upload bây giờ
+      let uploadedImageUrl = null;
+      if (stagedImage) {
+        try {
+          uploadedImageUrl = await uploadToR2(
+            stagedImage.file,
+            stagedImage.filename,
+            token
+          );
+          // Thông báo upload thành công
+          toast.success("Upload ảnh thành công!", {
+            position: "top-right",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "light",
+          });
+          // Clear staged image after successful upload
+          setStagedImage(null);
+        } catch (uploadErr) {
+          const msg = uploadErr.message || "Không thể upload ảnh.";
+          toast.error(msg, {
+            position: "top-right",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "light",
+          });
+          console.error(uploadErr);
+          return;
+        }
+      }
+
       const payload = {
         name: form.name,
         description: form.description || null,
@@ -260,7 +350,7 @@ function ProductManager() {
         ).toFixed(2),
         productTypeId: parseInt(form.productTypeId),
         productTypeName: form.productTypeName || null,
-        img: imageUrl,
+        img: uploadedImageUrl ? uploadedImageUrl : imageUrl,
         status: form.status,
         categoryId: form.categoryId ? parseInt(form.categoryId) : null,
         categoryName: form.categoryName || null,
@@ -290,7 +380,7 @@ function ProductManager() {
         ]);
         toast.success("Thêm món ăn thành công!", {
           position: "top-right",
-          autoClose: 3000,
+          autoClose: 1500,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -328,7 +418,7 @@ function ProductManager() {
         );
         toast.success("Cập nhật món ăn thành công!", {
           position: "top-right",
-          autoClose: 3000,
+          autoClose: 1500,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -342,7 +432,7 @@ function ProductManager() {
       setError(err.message || "Không thể lưu món ăn.");
       toast.error(err.message || "Không thể lưu món ăn.", {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 1500,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -378,7 +468,7 @@ function ProductManager() {
       setProducts(products.filter((p) => p.id !== id));
       toast.success("Xóa món ăn thành công!", {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 1500,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -394,7 +484,7 @@ function ProductManager() {
       setError(err.message || "Không thể xóa món ăn.");
       toast.error(err.message || "Không thể xóa món ăn.", {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 1500,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -435,7 +525,7 @@ function ProductManager() {
       setError(null);
       toast.success("Tìm kiếm món ăn thành công!", {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 1500,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -447,7 +537,7 @@ function ProductManager() {
       setError(err.message || "Không thể tìm kiếm món ăn.");
       toast.error(err.message || "Không thể tìm kiếm món ăn.", {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 1500,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -489,7 +579,7 @@ function ProductManager() {
       setError(null);
       toast.success("Đã xóa bộ lọc và tải lại danh sách món ăn", {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 1500,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -501,7 +591,7 @@ function ProductManager() {
       setError(err.message || "Không thể tải danh sách món ăn.");
       toast.error(err.message || "Không thể tải danh sách món ăn.", {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 1500,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -848,32 +938,36 @@ function ProductManager() {
                     ))}
                   </select>
                 </div>
-                <div>
-                  <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                <div className="sm:col-span-2 lg:col-span-4">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
                     Hình ảnh
                   </label>
-                  <input
-                    type="text"
-                    name="img"
-                    className="mt-1 w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
+                  <ImageUpload
                     value={form.img}
-                    onChange={handleChange}
-                    placeholder="Nhập tên tệp hoặc URL"
+                    token={token}
+                    onChange={(url) => {
+                      setForm((prev) => ({ ...prev, img: url }));
+                    }}
+                    onError={(error) => {
+                      // đảm bảo error là string và show toast (no global banner)
+                      const msg =
+                        typeof error === "string"
+                          ? error
+                          : "Upload ảnh thất bại";
+                      toast.error(msg, {
+                        position: "top-right",
+                        autoClose: 1500,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        theme: "light",
+                      });
+                    }}
+                    onFileSelect={(file, filename) => {
+                      setStagedImage({ file, filename });
+                    }}
                   />
-                  {form.img && (
-                    <img
-                      src={
-                        form.img.startsWith("http")
-                          ? form.img
-                          : `${baseImagePath}${form.img}`
-                      }
-                      alt="Preview"
-                      className="w-16 h-16 sm:w-20 sm:h-20 object-cover mt-2 rounded"
-                      onError={(e) => {
-                        e.target.src = "/images/Product/placeholder.jpg";
-                      }}
-                    />
-                  )}
                 </div>
               </div>
               <div className="mt-3 sm:mt-4">
